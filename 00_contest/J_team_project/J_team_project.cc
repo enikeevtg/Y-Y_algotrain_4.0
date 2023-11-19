@@ -1,6 +1,7 @@
 #include <iostream>
 
-void PrintPartitionPossibility() {
+// v1 algorithm with while loop
+void PrintPartitionPossibilityV1() {
   bool partition_possibility = false;
   int students_num = 0;
   int min = 0;
@@ -20,6 +21,21 @@ void PrintPartitionPossibility() {
   }
 
   if (partition_possibility == true) {
+    std::cout << "YES\n";
+  } else {
+    std::cout << "NO\n";
+  }
+}
+
+// simple algorithm
+void PrintPartitionPossibility() {
+  int students_num = 0;
+  int min = 0;
+  int max = 0;
+  std::cin >> students_num >> min >> max;
+
+  size_t groups_number = students_num / min;
+  if (groups_number * (max - min) >= students_num % min) {
     std::cout << "YES\n";
   } else {
     std::cout << "NO\n";
