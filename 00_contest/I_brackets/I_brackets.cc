@@ -16,19 +16,22 @@ int main() {
     if (*ptr == '(' || *ptr == '[' || *ptr == '{') {
       ++top;
       stack[top] = *ptr;
-    } else if (*ptr == ')') {
+    // ()
+    } else if (*ptr == ')' && top != empty_stack) {
       if (stack[top] == '(') {
         --top;
       } else {
         brackets_check = false;
       }
-    } else if (*ptr == ']') {
+    // []
+    } else if (*ptr == ']' && top != empty_stack) {
       if (stack[top] == '[') {
         --top;
       } else {
         brackets_check = false;
       }
-    } else if (*ptr == '}') {
+    // []
+    } else if (*ptr == '}' && top != empty_stack) {
       if (stack[top] == '{') {
         --top;
       } else {
