@@ -1,11 +1,43 @@
 /**
- * Подсчёт количества элементов массива, которые меньше опорного:
+ * Partition:
  * 
- * Алгоритм подсчёта реализован простым перебором элементов массива и
- * прописан внутри класса QSArray в методе PivotLessValuesCount()
+ * Алгоритм подсчёта прописан в main() с использованием метода
+ * FirstElemNotIf()
+ * 
+ * В классе QSArray реализован шаблонный метод FirstElemNotIf(), возвращающий
+ * итератор (указатель) на первый элемент массива (начиная с указателя на
+ * некоторый элемент) не удовлетворяющий условию предиката
+ * 
+ * Предикат выполнен в виде функционального объекта класса LessThanPivot
 **/
 
 #include <iostream>
+
+// Functor: Less Than Pivot
+class LessThanPivot {
+ public:
+  LessThanPivot(const int& pivot_value) : pivot_(pivot_value) {}
+
+  bool operator()(const int& value) {
+    return value < pivot_;
+  }
+
+ private:
+  int pivot_{0};
+};
+
+// Functor: Greater Than Or Equal To Pivot
+class GreaterThanOrEqualToPivot {
+ public:
+  GreaterThanOrEqualToPivot(const int& pivot_value) : pivot_(pivot_value) {}
+
+  bool operator()(const int& value) {
+    return value >= pivot_;
+  }
+
+ private:
+  int pivot_{0};
+};
 
 class QSArray {
  public:
@@ -26,17 +58,82 @@ class QSArray {
     std::cout << std::endl;
   }
 
-  int PivotLessValuesCount(const int& pivot) {
-    int less_counter = 0;
-    for (int i = 0; i < size_; ++i) {
-      if (array_[i] < pivot) ++less_counter;
+  int* Begin() { return array_; }
+
+  int* End() { return array_ + size_; }
+
+  void Swap(int* first, int* second) {
+    int tmp = *first;
+    *first = *second;
+    *second = tmp;
+  }
+
+  template <typename predicate_functor>
+  int* FirstElemIf(int* first, int* last, predicate_functor predicate) {
+    while (first != last && predicate(*first) == false) ++first;
+    return first;
+  }
+
+  template <typename predicate_functor>
+  int* LastElemIf(int* first, int* last, predicate_functor predicate) {
+    while (last != first && predicate(*last) == false) --last;
+    return last;
+  }
+
+  void Partition(int* first, int* last, const int& pivot) {
+    GreaterThanOrEqualToPivot pred_greater_or_equal(pivot);
+    LessThanPivot pred_less(pivot);
+
+    int* ptr_greater_or_equal = first;
+    int* ptr_less = last;
+    while (ptr_greater_or_equal < ptr_less) {
+      ptr_greater_or_equal = FirstElemIf(first, last, pred_greater_or_equal);
+      ptr_less = LastElemIf(first, last, pred_less);
+      // std::cout << *ptr_greater_or_equal << ' ' << *ptr_less << std::endl;
+      if (ptr_greater_or_equal < ptr_less) Swap(ptr_greater_or_equal, ptr_less);
+      first = ptr_greater_or_equal;
+      last = ptr_less;
     }
-    return less_counter;
+    size_t less_than_pivot = last - array_;
+    if (last != first) ++less_than_pivot;
+    std::cout << less_than_pivot << std::endl << size_ - less_than_pivot << std::endl;
+    // int* ptr = array_;
+    // for (; ptr <= last; ++ptr) {
+    //   std::cout << *ptr << ' ';
+    // }
+    // std::cout << std::endl;
+
+    // for (; ptr < array_ + size_; ++ptr) {
+    //   std::cout << *ptr << ' ';
+    // }
+    // std::cout << std::endl;
+  }
+
+  void RandPartition(int* first, int* last) {
+    int pivot = *(first + std::rand() % (last + 1 - first));
+    std::cout << pivot << std::endl;
+    Partition(first, last, pivot);
+
+    // GreaterThanOrEqualToPivot pred_greater_or_equal(pivot);
+    // LessThanPivot pred_less(pivot);
+
+    // int* ptr_greater_or_equal = first;
+    // int* ptr_less = last;
+    // while (ptr_greater_or_equal < ptr_less) {
+    //   PrintArray();
+    //   ptr_greater_or_equal = FirstElemIf(first, last, pred_greater_or_equal);
+    //   ptr_less = LastElemIf(first, last, pred_less);
+    //   std::cout << *ptr_greater_or_equal << ' ' << *ptr_less << std::endl;
+    //   if (ptr_greater_or_equal < ptr_less) Swap(ptr_greater_or_equal, ptr_less);
+    //   first = ptr_greater_or_equal;
+    //   last = ptr_less;
+    // }
+    // PrintArray();
   }
 
  private:
-  size_t size_{0};
   int* array_{nullptr};
+  size_t size_{0};
 };
 
 int main() {
@@ -47,10 +144,7 @@ int main() {
 
   int pivot_value = 0;
   std::cin >> pivot_value;
-  int less = array.PivotLessValuesCount(pivot_value);
-  int greater = array_length - less;
-
-  std::cout << less << std::endl << greater << std::endl;
+  array.Partition(array.Begin(), array.End() - 1, pivot_value);
 
   return 0;
 }
