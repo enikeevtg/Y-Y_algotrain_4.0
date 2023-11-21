@@ -45,9 +45,7 @@ class QSArray {
 class LessThanPivot {
  public:
   LessThanPivot(const int& pivot_value) : pivot_(pivot_value) {}
-  bool operator()(const int& value) {
-    return value < pivot_;
-  }
+  bool operator()(const int& value) { return value < pivot_; }
 
  private:
   int pivot_{0};

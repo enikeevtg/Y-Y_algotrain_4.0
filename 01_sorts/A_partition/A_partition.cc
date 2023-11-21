@@ -1,15 +1,17 @@
 /**
  * Partition:
- * 
- * Алгоритм подсчёта прописан в main() с использованием метода
- * FirstElemNotIf()
- * 
- * В классе QSArray реализован шаблонный метод FirstElemNotIf(), возвращающий
- * итератор (указатель) на первый элемент массива (начиная с указателя на
- * некоторый элемент) не удовлетворяющий условию предиката
- * 
- * Предикат выполнен в виде функционального объекта класса LessThanPivot
-**/
+ *
+ * Алгоритм разибения для быстрой сортировки реализован в методе Partition()
+ * класса QSArray
+ *
+ * В классе QSArray реализован шаблонные методы FindFirstElem() и
+ * FindLastElem(), возвращающие итератор (указатель) на первый
+ * и последний элемент массива соответственно (начиная с указателя на
+ * некоторый элемент) удовлетворяющий условию предиката
+ *
+ * Предикаты выполнен в виде функциональных объектов классов LessThanPivot и
+ * GreaterThanOrEqualToPivot
+ **/
 
 #include <iostream>
 
@@ -18,9 +20,7 @@ class LessThanPivot {
  public:
   LessThanPivot(const int& pivot_value) : pivot_(pivot_value) {}
 
-  bool operator()(const int& value) {
-    return value < pivot_;
-  }
+  bool operator()(const int& value) { return value < pivot_; }
 
  private:
   int pivot_{0};
@@ -31,9 +31,7 @@ class GreaterThanOrEqualToPivot {
  public:
   GreaterThanOrEqualToPivot(const int& pivot_value) : pivot_(pivot_value) {}
 
-  bool operator()(const int& value) {
-    return value >= pivot_;
-  }
+  bool operator()(const int& value) { return value >= pivot_; }
 
  private:
   int pivot_{0};
@@ -69,66 +67,49 @@ class QSArray {
   }
 
   template <typename predicate_functor>
-  int* FirstElemIf(int* first, int* last, predicate_functor predicate) {
-    while (first != last && predicate(*first) == false) ++first;
-    return first;
+  int* FindFirstElem(int* begin, int* end, predicate_functor predicate) {
+    while (begin != end && predicate(*begin) == false) ++begin;
+    if (begin == end) begin = nullptr;
+    return begin;
   }
 
   template <typename predicate_functor>
-  int* LastElemIf(int* first, int* last, predicate_functor predicate) {
-    while (last != first && predicate(*last) == false) --last;
-    return last;
+  int* FindLastElem(int* begin, int* end, predicate_functor predicate) {
+    --end;
+    while (end != begin && predicate(*end) == false) --end;
+    if (end == begin && predicate(*end) == false) end = nullptr;
+    return end;
   }
 
-  void Partition(int* first, int* last, const int& pivot) {
+  int* Partition(int* begin, int* end, const int& pivot) {
     GreaterThanOrEqualToPivot pred_greater_or_equal(pivot);
     LessThanPivot pred_less(pivot);
 
-    int* ptr_greater_or_equal = first;
-    int* ptr_less = last;
-    while (ptr_greater_or_equal < ptr_less) {
-      ptr_greater_or_equal = FirstElemIf(first, last, pred_greater_or_equal);
-      ptr_less = LastElemIf(first, last, pred_less);
-      // std::cout << *ptr_greater_or_equal << ' ' << *ptr_less << std::endl;
-      if (ptr_greater_or_equal < ptr_less) Swap(ptr_greater_or_equal, ptr_less);
-      first = ptr_greater_or_equal;
-      last = ptr_less;
-    }
-    size_t less_than_pivot = last - array_;
-    if (last != first) ++less_than_pivot;
-    std::cout << less_than_pivot << std::endl << size_ - less_than_pivot << std::endl;
-    // int* ptr = array_;
-    // for (; ptr <= last; ++ptr) {
-    //   std::cout << *ptr << ' ';
-    // }
-    // std::cout << std::endl;
+    int* ptr_greater_or_equal = begin;
+    int* ptr_less = end;
+    while (ptr_greater_or_equal && ptr_less &&
+           ptr_greater_or_equal < ptr_less) {
+      ptr_greater_or_equal = FindFirstElem(begin, end, pred_greater_or_equal);
+      ptr_less = FindLastElem(begin, end, pred_less);
 
-    // for (; ptr < array_ + size_; ++ptr) {
-    //   std::cout << *ptr << ' ';
-    // }
-    // std::cout << std::endl;
+      if (ptr_greater_or_equal && ptr_less) {
+        if (ptr_greater_or_equal < ptr_less) {
+          Swap(ptr_greater_or_equal, ptr_less);
+        }
+        begin = ptr_greater_or_equal;
+        end = ptr_less;
+      } else if (!ptr_greater_or_equal && ptr_less) {
+        begin = ptr_less + 1;
+      }
+    }
+
+    return begin;
   }
 
-  void RandPartition(int* first, int* last) {
-    int pivot = *(first + std::rand() % (last + 1 - first));
+  int* RandPartition(int* begin, int* end) {
+    int pivot = *(begin + std::rand() % (end + 1 - begin));
     std::cout << pivot << std::endl;
-    Partition(first, last, pivot);
-
-    // GreaterThanOrEqualToPivot pred_greater_or_equal(pivot);
-    // LessThanPivot pred_less(pivot);
-
-    // int* ptr_greater_or_equal = first;
-    // int* ptr_less = last;
-    // while (ptr_greater_or_equal < ptr_less) {
-    //   PrintArray();
-    //   ptr_greater_or_equal = FirstElemIf(first, last, pred_greater_or_equal);
-    //   ptr_less = LastElemIf(first, last, pred_less);
-    //   std::cout << *ptr_greater_or_equal << ' ' << *ptr_less << std::endl;
-    //   if (ptr_greater_or_equal < ptr_less) Swap(ptr_greater_or_equal, ptr_less);
-    //   first = ptr_greater_or_equal;
-    //   last = ptr_less;
-    // }
-    // PrintArray();
+    return Partition(begin, end, pivot);
   }
 
  private:
@@ -144,7 +125,22 @@ int main() {
 
   int pivot_value = 0;
   std::cin >> pivot_value;
-  array.Partition(array.Begin(), array.End() - 1, pivot_value);
+  int* bound = array.Partition(array.Begin(), array.End(), pivot_value);
+
+  size_t less_than_pivot = bound - array.Begin();
+  std::cout << less_than_pivot << std::endl
+            << array_length - less_than_pivot << std::endl;
+
+  // Вывод частей массива
+  for (int* ptr = array.Begin(); ptr < bound; ++ptr) {
+    std::cout << *ptr << ' ';
+  }
+  std::cout << std::endl;
+
+  for (int* ptr = bound; ptr < array.Begin() + array_length; ++ptr) {
+    std::cout << *ptr << ' ';
+  }
+  std::cout << std::endl;
 
   return 0;
 }
