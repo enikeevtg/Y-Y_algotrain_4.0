@@ -1,38 +1,9 @@
-#include <iostream>
-
-class MArray {
- public:
-  MArray() {};
-  ~MArray() {}
-
- private:
-  int* array_{nullptr};
-  size_t size_{0};
-};
-
-
-int main() {
-
-
-  return 0;
-}
-
 /**
- * QuickSort:
+ * Merge:
  *
- * Алгоритм быстрой сортировки реализован в методе QuickSort()
- * класса Array. Метод QuickSort(), вызывающий QuickSort(begin, end),
- * который в свою очередь вызывает метод Partition(begin, end, pivot)
- * из задания A. Далее идёт рекрсивный вызов QuickSort(begin, end)
- *
- * Метод Partition() использует методы с функциональными объектами-предикатами,
- * которые реализованы в виде шаблонных методов FindFirstElem() и
- * FindLastElem(). Эти методы возвращают итератор (указатель) на первый
- * и последний элемент массива соответственно (начиная с указателя на
- * некоторый элемент) удовлетворяющий условию предиката
- *
- * Предикаты выполнены в виде функциональных объектов классов LessThanPivot и
- * GreaterThanOrEqualToPivot
+ * Алгоритм слияния двух массивов отсортированных по неубыванию реализован
+ * в методе MergeSortedArrays() класса Array. Метод принимает в качестве
+ * параметра другой массив и возвращает объект класса Array.
  **/
 
 #include <iostream>
@@ -60,6 +31,7 @@ class GreaterThanOrEqualToPivot {
 };
 
 class Array {
+  /* PUBLIC SECTION */
  public:
   Array() {}
   Array(size_t size) : size_(size) { array_ = new int[size_]{}; }
@@ -82,11 +54,6 @@ class Array {
 
   int* End() { return array_ + size_; }
 
-  void Swap(int* first, int* second) {
-    int tmp = *first;
-    *first = *second;
-    *second = tmp;
-  }
 
   template <typename predicate_functor>
   int* FindFirstElem(int* begin, int* end, predicate_functor predicate) {
@@ -101,6 +68,57 @@ class Array {
     while (end != begin && predicate(*end) == false) --end;
     if (end == begin && predicate(*end) == false) end = nullptr;
     return end;
+  }
+
+  void QuickSort() {
+    if (size_ > 1) QuickSort(array_, array_ + size_);
+  }
+
+  void QuickSort(int* begin, int* end) {
+    int pivot = *(begin + std::rand() % (end - begin));
+    int* bound = Partition(begin, end, pivot);
+    if (bound - begin > 1) QuickSort(begin, bound);
+    while (bound < end && *bound == pivot) ++bound;
+    if (end - bound > 1) QuickSort(bound, end);
+  }
+
+  Array MergeSortedArrays(const Array& other) {
+    Array merged(size_ + other.size_);
+    int* first = array_;
+    int* first_end = array_ + size_;
+    int* second = other.array_;
+    int* second_end = other.array_ + other.size_;
+    int* ptr = merged.array_;
+    while (first != first_end && second != second_end) {
+      if (*first <= *second) {
+        *ptr = *first;
+        ++first;
+      } else {
+        *ptr = *second;
+        ++second;
+      }
+      ++ptr;
+    }
+    while (first != first_end) {
+      *ptr = *first;
+      ++first;
+      ++ptr;
+    }
+    while (second != second_end) {
+      *ptr = *second;
+      ++second;
+      ++ptr;
+    }
+
+    return merged;
+  }
+
+  /* PRIVATE SECTION */
+ private:
+  void Swap(int* first, int* second) {
+    int tmp = *first;
+    *first = *second;
+    *second = tmp;
   }
 
   int* Partition(int* begin, int* end, const int& pivot) {
@@ -133,39 +151,6 @@ class Array {
     return Partition(begin, end, pivot);
   }
 
-  void QuickSort() {
-    if (size_ > 1) QuickSort(array_, array_ + size_);
-  }
-
-  void QuickSort(int* begin, int* end) {
-    int pivot = *(begin + std::rand() % (end - begin));
-    int* bound = Partition(begin, end, pivot);
-    if (bound - begin > 1) QuickSort(begin, bound);
-    while (bound < end && *bound == pivot) ++bound;
-    if (end - bound > 1) QuickSort(bound, end);
-  }
-
-  Array MergeArray(const Array& other) {
-    Array merged(size_ + other.size_);
-    int* first = array_;
-    int* first_end = array_ + size_;
-    int* second = other.array_;
-    int* second_end = other.array_ + other.size_;
-    int* ptr = merged.array_;
-    while (first != first_end && second != second_end) {
-      if (*first < *second) {
-        *ptr = *first;
-        ++first;
-      } else {
-        *ptr = *second;
-        ++second;
-      }
-      ++ptr;
-    }
-    return merged;
-  }
-
- private:
   int* array_{nullptr};
   size_t size_{0};
 };
@@ -181,7 +166,7 @@ int main() {
   Array second_array(second_array_length);
   second_array.FillArray();
   
-  Array result_array = first_array.MergeArray(second_array);
+  Array result_array = first_array.MergeSortedArrays(second_array);
   result_array.PrintArray();
   return 0;
 }
