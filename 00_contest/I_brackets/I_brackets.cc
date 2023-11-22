@@ -16,21 +16,21 @@ int main() {
     if (*ptr == '(' || *ptr == '[' || *ptr == '{') {
       ++top;
       stack[top] = *ptr;
-    // ()
+      // ()
     } else if (*ptr == ')') {
       if (top != empty_stack && stack[top] == '(') {
         --top;
       } else {
         brackets_check = false;
       }
-    // []
+      // []
     } else if (*ptr == ']') {
       if (top != empty_stack && stack[top] == '[') {
         --top;
       } else {
         brackets_check = false;
       }
-    // []
+      // []
     } else if (*ptr == '}') {
       if (top != empty_stack && stack[top] == '{') {
         --top;

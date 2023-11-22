@@ -10,7 +10,7 @@ int main() {
 
   int letters_count_1[letters_number]{};
   int letters_count_2[letters_number]{};
-  
+
   int i = 0;
   while (str_1[i] != '\0' && str_2[i] != '\0') {
     letters_count_1[(int)str_1[i] - 97] += 1;

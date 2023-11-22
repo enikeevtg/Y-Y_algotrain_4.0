@@ -54,7 +54,6 @@ class Array {
 
   int* End() { return array_ + size_; }
 
-
   template <typename predicate_functor>
   int* FindFirstElem(int* begin, int* end, predicate_functor predicate) {
     while (begin != end && predicate(*begin) == false) ++begin;
@@ -129,8 +128,8 @@ class Array {
     int* ptr_less = end;
     while (ptr_greater_or_equal && ptr_less &&
            ptr_greater_or_equal < ptr_less) {
-      ptr_greater_or_equal = FindFirstElem(begin, end,
-      pred_greater_or_equal); ptr_less = FindLastElem(begin, end, pred_less);
+      ptr_greater_or_equal = FindFirstElem(begin, end, pred_greater_or_equal);
+      ptr_less = FindLastElem(begin, end, pred_less);
 
       if (ptr_greater_or_equal && ptr_less) {
         if (ptr_greater_or_equal < ptr_less) {
@@ -165,7 +164,7 @@ int main() {
   std::cin >> second_array_length;
   Array second_array(second_array_length);
   second_array.FillArray();
-  
+
   Array result_array = first_array.MergeSortedArrays(second_array);
   result_array.PrintArray();
   return 0;

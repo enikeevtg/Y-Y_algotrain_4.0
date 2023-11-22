@@ -92,8 +92,8 @@ class QSArray {
     int* ptr_less = end;
     while (ptr_greater_or_equal && ptr_less &&
            ptr_greater_or_equal < ptr_less) {
-      ptr_greater_or_equal = FindFirstElem(begin, end,
-      pred_greater_or_equal); ptr_less = FindLastElem(begin, end, pred_less);
+      ptr_greater_or_equal = FindFirstElem(begin, end, pred_greater_or_equal);
+      ptr_less = FindLastElem(begin, end, pred_less);
 
       if (ptr_greater_or_equal && ptr_less) {
         if (ptr_greater_or_equal < ptr_less) {

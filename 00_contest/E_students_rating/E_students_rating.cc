@@ -17,7 +17,8 @@ int main() {
 
   for (int i = 0; i < n; ++i) {
     int pivot = ratings[i];
-    int result = (pivot * (i + 1) - ratings_sum[i]) + (ratings_sum[n - 1] - ratings_sum[i] - pivot * (n - i - 1));
+    int result = (pivot * (i + 1) - ratings_sum[i]) +
+                 (ratings_sum[n - 1] - ratings_sum[i] - pivot * (n - i - 1));
     std::cout << result << ' ';
   }
 

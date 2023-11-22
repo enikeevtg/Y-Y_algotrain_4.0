@@ -9,7 +9,7 @@
  * и последний элемент массива соответственно (начиная с указателя на
  * некоторый элемент) удовлетворяющий условию предиката
  *
- * Предикаты выполнен в виде функциональных объектов классов LessThanPivot и
+ * Предикаты выполнены в виде функциональных объектов классов LessThanPivot и
  * GreaterThanOrEqualToPivot
  **/
 
@@ -107,8 +107,7 @@ class QSArray {
   }
 
   int* RandPartition(int* begin, int* end) {
-    int pivot = *(begin + std::rand() % (end + 1 - begin));
-    std::cout << pivot << std::endl;
+    int pivot = *(begin + std::rand() % (end - begin));
     return Partition(begin, end, pivot);
   }
 

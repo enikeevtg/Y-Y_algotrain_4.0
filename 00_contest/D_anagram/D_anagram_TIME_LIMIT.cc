@@ -2,7 +2,6 @@
 
 const int letters_number = 26;
 
-
 class String {
  public:
   String(){};

@@ -12,7 +12,7 @@ int main() {
   for (int i = 0; i < n; ++i) {
     int pivot = ratings[i];
     int j = 0;
-    
+
     int less = 0;
     while (ratings[j] < pivot) {
       less += ratings[j];
