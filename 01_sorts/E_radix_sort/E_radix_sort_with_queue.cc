@@ -7,13 +7,13 @@
  * на каждой фазе сортировки. Итераторы в очереди было лень писать, поэтому
  * пришлось вынести структуру узла из класса HalfQueue, а доступ к голове
  * и хвосту предоставить через геттеры.
- * 
+ *
  * Ошибка, допущенная с использованием очередей:
  * использовалась только один массив очередей, который перезаписывался во время
- * прохождения по элементам его элементов. В следствие этого решение закольцовывалось и уходило в бесконечный цикл.
- * Исправление:
- * Введен буфферный массив очередей
- * 
+ * прохождения по элементам его элементов. В следствие этого решение
+ *закольцовывалось и уходило в бесконечный цикл. Исправление: Введен буфферный
+ *массив очередей
+ *
  * Проще изначально не усложнять решение и не плодить лишние сущности.
  * То же самое можно сделать двумя массивами данных и вспомогательными
  * массивами подсчёта и позиций вставок (см. скрин)
@@ -33,7 +33,6 @@ struct QNode {
 template <typename T>
 class HalfQueue {
  public:
-
   HalfQueue() {}
   ~HalfQueue() {
     while (size_ != 0) {
@@ -98,7 +97,7 @@ class RSArray {
  public:
   RSArray() {}
   RSArray(size_t size) : size_(size) {
-    array_ = new char*[size_]{};
+    array_ = new char* [size_] {};
     for (int i = 0; i < size_; ++i) {
       array_[i] = new char[strlen]{};
     }
@@ -137,7 +136,7 @@ class RSArray {
       int number_pos = string_size_ - 1;
       HalfQueue<char*>* buckets = new HalfQueue<char*>[10];
       HalfQueue<char*>* buckets_buffer = new HalfQueue<char*>[10];
-      
+
       // first phase of sorting
       for (size_t i = 0; i < size_; ++i) {
         int k = array_[i][number_pos] - nill_code;
@@ -146,11 +145,9 @@ class RSArray {
       --number_pos;
 
       // other phases of sorting
-      int phase = 2;
-      for (; number_pos >= 0; --number_pos, ++phase) {
+      for (; number_pos >= 0; --number_pos) {
         for (int i = 0; i < 10; ++i) {
-          for (QNode<char*>* ptr = buckets[i].GetRoot();
-               ptr != nullptr;) {
+          for (QNode<char*>* ptr = buckets[i].GetRoot(); ptr != nullptr;) {
             int k = ptr->data[number_pos] - nill_code;
             ptr = ptr->next;
             buckets_buffer[k].MoveFromOtherQueue(buckets[i]);
@@ -164,11 +161,10 @@ class RSArray {
       // from queue to array
       int j = 0;
       for (int i = 0; i < 10; ++i) {
-        for (QNode<char*>* ptr = buckets[i].GetRoot();
-               ptr != nullptr;) {
-            array_[j] = ptr->data;
-            ++j;
-            ptr = ptr->next;
+        for (QNode<char*>* ptr = buckets[i].GetRoot(); ptr != nullptr;) {
+          array_[j] = ptr->data;
+          ++j;
+          ptr = ptr->next;
         }
       }
 
@@ -185,7 +181,7 @@ class RSArray {
       int number_pos = string_size_ - 1;
       HalfQueue<char*>* buckets = new HalfQueue<char*>[10];
       HalfQueue<char*>* buckets_buffer = new HalfQueue<char*>[10];
-      
+
       // first phase of sorting
       for (size_t i = 0; i < size_; ++i) {
         int k = array_[i][number_pos] - nill_code;
@@ -194,7 +190,7 @@ class RSArray {
       --number_pos;
       std::cout << "**********\nPhase 1\n";
       for (int i = 0; i < 10; ++i) {
-        std::cout << "Bucket " << i << ": "; 
+        std::cout << "Bucket " << i << ": ";
         buckets[i].PrintQueue();
       }
 
@@ -203,8 +199,7 @@ class RSArray {
       for (; number_pos >= 0; --number_pos, ++phase) {
         std::cout << "**********\nPhase " << phase << std::endl;
         for (int i = 0; i < 10; ++i) {
-          for (QNode<char*>* ptr = buckets[i].GetRoot();
-               ptr != nullptr;) {
+          for (QNode<char*>* ptr = buckets[i].GetRoot(); ptr != nullptr;) {
             int k = ptr->data[number_pos] - nill_code;
             ptr = ptr->next;
             buckets_buffer[k].MoveFromOtherQueue(buckets[i]);
@@ -214,7 +209,7 @@ class RSArray {
         buckets = buckets_buffer;
         buckets_buffer = buckets_tmp;
         for (int i = 0; i < 10; ++i) {
-          std::cout << "Bucket " << i << ": "; 
+          std::cout << "Bucket " << i << ": ";
           buckets[i].PrintQueue();
         }
       }  // for 1...m-1 number positions
@@ -222,11 +217,10 @@ class RSArray {
       // from queue to array
       int j = 0;
       for (int i = 0; i < 10; ++i) {
-        for (QNode<char*>* ptr = buckets[i].GetRoot();
-               ptr != nullptr;) {
-            array_[j] = ptr->data;
-            ++j;
-            ptr = ptr->next;
+        for (QNode<char*>* ptr = buckets[i].GetRoot(); ptr != nullptr;) {
+          array_[j] = ptr->data;
+          ++j;
+          ptr = ptr->next;
         }
       }
 
