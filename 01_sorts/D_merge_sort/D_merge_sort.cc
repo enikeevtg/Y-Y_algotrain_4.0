@@ -8,17 +8,22 @@
  *
  * Алгоритм сортировки слиянием реализован в методе MergeSort()
  * класса MArray. Метод MergeSort() вызывает MergeSort(begin, end, buffer),
- * внутри которой происходит разленение куска массива на две части и
- * рекрсивный вызов MergeSort(begin, end, buffer)
+ * внутри которой происходит разделенение куска массива на две части и
+ * рекурсивный вызов MergeSort(begin, end, buffer). Когда кусок массива
+ * достигает минимального рамера вызывается метод
+ * MergeSortedArrays(begin_1, end_1, begin_2, end_2, buffer), а далее рекурсия
+ * начинает разматываться.
+ * 
+ * Исползование дополнительной памяти O(2N)
  **/
 
 #include <iostream>
 
-class MArray {
+class MSArray {
  public:
-  MArray() {}
-  MArray(size_t size) : size_(size) { array_ = new int[size_]{}; }
-  ~MArray() { delete[] array_; }
+  MSArray() {}
+  MSArray(size_t size) : size_(size) { array_ = new int[size_]{}; }
+  ~MSArray() { delete[] array_; }
 
   void FillArray() {
     for (int i = 0; i < size_; ++i) {
@@ -72,8 +77,8 @@ class MArray {
     if (end_2 - begin_2 > 1) delete[] begin_2;
   }
 
-  MArray MergeSortedArrays(const MArray& other) {
-    MArray merged(size_ + other.size_);
+  MSArray MergeSortedArrays(const MSArray& other) {
+    MSArray merged(size_ + other.size_);
     int* first = array_;
     int* first_end = array_ + size_;
     int* second = other.array_;
@@ -141,7 +146,7 @@ class MArray {
 int main() {
   size_t array_length = 0;
   std::cin >> array_length;
-  MArray array(array_length);
+  MSArray array(array_length);
   array.FillArray();
   array.MergeSort();
   array.PrintArray();
