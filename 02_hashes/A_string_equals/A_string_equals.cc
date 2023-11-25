@@ -1,16 +1,16 @@
 #include <iostream>
 #include <string>
 
-const int kHashNumber = 3;  // количество пар x-p (степень-модуль)
-const int kXArray[kHashNumber] = {10, 10, 10};
-const int kModulesArray[kHashNumber] = {/*1e9 + 7*/ 1000000007, 1000000013, 1000000007};
+const int kHashNumber = 1; // количество пар x-p (степень-модуль)
+const int kXArray[kHashNumber] = {257};
+const int kModulesArray[kHashNumber] = {1000000007};
 
 class HString {
- public:
+public:
   HString() {}
-  HString(const size_t size, const char* input) : size_(size), str_(input) {
-    hash_tables_array_ = new uint* [kHashNumber] {};
-    x_pows_arrays_array_ = new uint* [kHashNumber] {};
+  HString(const size_t size, const char *input) : size_(size), str_(input) {
+    hash_tables_array_ = new uint *[kHashNumber] {};
+    x_pows_arrays_array_ = new uint *[kHashNumber] {};
     for (int i = 0; i < kHashNumber; ++i) {
       hash_tables_array_[i] = new uint[size_ + 1];
       x_pows_arrays_array_[i] = new uint[size_ + 1];
@@ -43,8 +43,7 @@ class HString {
     }
   }
 
-  bool PartsEquality(const int& l, const int& f1, const int& f2) {
-    // int false_count = 0;
+  bool PartsEquality(const int &l, const int &f1, const int &f2) {
     for (int i = 0; i < kHashNumber; ++i) {
       uint hash_f1 = hash_tables_array_[i][f1];
       uint hash_f2 = hash_tables_array_[i][f2];
@@ -54,20 +53,19 @@ class HString {
       int p = kModulesArray[i];
 
       if ((hash_l1 + hash_f2 * x) % p != (hash_l2 + hash_f1 * x) % p) {
-        // ++false_count;
         return false;
       }
     }
     return true;
   }
 
- private:
-  using uint = unsigned long long int;
+private:
+  using uint = unsigned long int;
 
   void PrefixHashes() {
     for (int table_id = 0; table_id < kHashNumber; ++table_id) {
-      uint* hash = hash_tables_array_[table_id];
-      uint* x_pows = x_pows_arrays_array_[table_id];
+      uint *hash = hash_tables_array_[table_id];
+      uint *x_pows = x_pows_arrays_array_[table_id];
       int x_ = kXArray[table_id];
       int p_ = kModulesArray[table_id];
 
@@ -75,7 +73,7 @@ class HString {
       x_pows[0] = 1;
       for (int i = 1; i <= size_; ++i) {
         hash[i] = (hash[i - 1] * x_ + str_[i - 1]) % p_;
-        x_pows[i] = x_pows[i - 1] * x_;
+        x_pows[i] = (x_pows[i - 1] * x_) % p_;
       }
     }
   }
@@ -83,8 +81,8 @@ class HString {
   void PrefixHashesDebug() {
     int ascii_numbers_offset = 48;
     for (int table_id = 0; table_id < kHashNumber; ++table_id) {
-      uint* hash = hash_tables_array_[0];
-      uint* x_pows = x_pows_arrays_array_[0];
+      uint *hash = hash_tables_array_[0];
+      uint *x_pows = x_pows_arrays_array_[0];
       int x_ = 10;
       int p_ = 1e9 + 7;
 
@@ -92,15 +90,15 @@ class HString {
       x_pows[0] = 1;
       for (int i = 1; i <= size_; ++i) {
         hash[i] = (hash[i - 1] * x_ + str_[i - 1] - ascii_numbers_offset) % p_;
-        x_pows[i] = x_pows[i - 1] * x_;
+        x_pows[i] = (x_pows[i - 1] * x_) % p_;
       }
     }
   }
 
-  const char* str_{nullptr};
+  const char *str_{nullptr};
   int size_{0};
-  uint** hash_tables_array_{nullptr};
-  uint** x_pows_arrays_array_{nullptr};
+  uint **hash_tables_array_{nullptr};
+  uint **x_pows_arrays_array_{nullptr};
 };
 
 int main() {
@@ -115,14 +113,17 @@ int main() {
     int from_1 = 0;
     int from_2 = 0;
     std::cin >> len >> from_1 >> from_2;
-    std::string str1(input, from_1, len);
-    std::string str2(input, from_2, len);
-    std::cout << len << ' ' << from_1 << ' ' << from_2 << '\n' << str2 << "\n" << str2 << "\n: ";
     if (string.PartsEquality(len, from_1, from_2) == true) {
-      std::cout << "yes\n\n";
+      std::cout << "yes\n";
     } else {
-      std::cout << "no\n\n";
+      std::cout << "no\n";
     }
+    // debug:
+    // std::string str1(input, from_1, len);
+    // std::string str2(input, from_2, len);
+    // std::cout << len << ' ' << from_1 << ' ' << from_2 << '\n'
+    //           << str1 << "\n"
+    //           << str2 << "\n\n";
   }
 
   return 0;
