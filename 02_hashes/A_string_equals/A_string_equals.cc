@@ -8,9 +8,9 @@ const int kModulesArray[kHashNumber] = {1000000007};
 class HString {
 public:
   HString() {}
-  HString(const size_t size, const char *input) : size_(size), str_(input) {
-    hash_tables_array_ = new uint *[kHashNumber] {};
-    x_pows_arrays_array_ = new uint *[kHashNumber] {};
+  HString(const size_t size, const char* input) : size_(size), str_(input) {
+    hash_tables_array_ = new uint*[kHashNumber] {};
+    x_pows_arrays_array_ = new uint*[kHashNumber] {};
     for (int i = 0; i < kHashNumber; ++i) {
       hash_tables_array_[i] = new uint[size_ + 1];
       x_pows_arrays_array_[i] = new uint[size_ + 1];
@@ -43,7 +43,7 @@ public:
     }
   }
 
-  bool PartsEquality(const int &l, const int &f1, const int &f2) {
+  bool PartsEquality(const int& l, const int& f1, const int& f2) {
     for (int i = 0; i < kHashNumber; ++i) {
       uint hash_f1 = hash_tables_array_[i][f1];
       uint hash_f2 = hash_tables_array_[i][f2];
@@ -64,8 +64,8 @@ private:
 
   void PrefixHashes() {
     for (int table_id = 0; table_id < kHashNumber; ++table_id) {
-      uint *hash = hash_tables_array_[table_id];
-      uint *x_pows = x_pows_arrays_array_[table_id];
+      uint* hash = hash_tables_array_[table_id];
+      uint* x_pows = x_pows_arrays_array_[table_id];
       int x_ = kXArray[table_id];
       int p_ = kModulesArray[table_id];
 
@@ -81,8 +81,8 @@ private:
   void PrefixHashesDebug() {
     int ascii_numbers_offset = 48;
     for (int table_id = 0; table_id < kHashNumber; ++table_id) {
-      uint *hash = hash_tables_array_[0];
-      uint *x_pows = x_pows_arrays_array_[0];
+      uint* hash = hash_tables_array_[0];
+      uint* x_pows = x_pows_arrays_array_[0];
       int x_ = 10;
       int p_ = 1e9 + 7;
 
@@ -95,10 +95,10 @@ private:
     }
   }
 
-  const char *str_{nullptr};
+  const char* str_{nullptr};
   int size_{0};
-  uint **hash_tables_array_{nullptr};
-  uint **x_pows_arrays_array_{nullptr};
+  uint** hash_tables_array_{nullptr};
+  uint** x_pows_arrays_array_{nullptr};
 };
 
 int main() {

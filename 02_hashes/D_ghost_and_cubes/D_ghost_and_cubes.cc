@@ -44,7 +44,7 @@ class HString {
     }
   }
 
-  bool PartsEquality(const int &l, const int &f1, const int &f2) {
+  bool PartsEquality(const int& l, const int& f1, const int& f2) {
     for (int i = 0; i < kHashNumber; ++i) {
       uint hash_f1 = hash_tables_array_[i][f1];
       uint hash_f2 = hash_tables_array_[i][f2];
